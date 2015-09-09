@@ -8,6 +8,7 @@ from django.utils.six import text_type
 
 
 class BaseRESTAPITestCase(APITestCase):
+
     """Base test case class for testing REST API endpoints."""
 
     #: *required*: Base route name of the API endpoints to test.
@@ -70,6 +71,7 @@ class BaseRESTAPITestCase(APITestCase):
 
 
 class ListAPITestCaseMixin(object):
+
     """Adds a list view test to the test case."""
 
     def get_list_url(self):
@@ -120,6 +122,7 @@ class ListAPITestCaseMixin(object):
 
 
 class DetailAPITestCaseMixin(object):
+
     """Adds a detail view test to the test case."""
 
     # A list of attribute names to check equality between the main object and the response data.
@@ -198,6 +201,7 @@ class DetailAPITestCaseMixin(object):
 
 
 class CreateAPITestCaseMixin(object):
+
     """Adds a create view test to the test case."""
 
     #: *required*: Dictionary of data to use as the POST request's body.
@@ -264,6 +268,7 @@ class CreateAPITestCaseMixin(object):
 
 
 class DestroyAPITestCaseMixin(object):
+
     """Adds a destroy view test to the test case."""
 
     def get_destroy_url(self):
@@ -313,6 +318,7 @@ class DestroyAPITestCaseMixin(object):
 
 
 class UpdateAPITestCaseMixin(object):
+
     """Adds an update view test to the test case."""
 
     #: Whether to send a PATCH request instead of PUT. Defaults to ``True``.
@@ -437,6 +443,7 @@ class UpdateAPITestCaseMixin(object):
 
 
 class ReadRESTAPITestCaseMixin(ListAPITestCaseMixin, DetailAPITestCaseMixin):
+    
     """Adds the read CRUD operations tests to the test case.
 
     Includes: :class:`ListAPITestCaseMixin`, :class:`DetailAPITestCaseMixin`.
@@ -446,6 +453,7 @@ class ReadRESTAPITestCaseMixin(ListAPITestCaseMixin, DetailAPITestCaseMixin):
 
 
 class WriteRESTAPITestCaseMixin(CreateAPITestCaseMixin, UpdateAPITestCaseMixin, DestroyAPITestCaseMixin):
+
     """Adds the write CRUD operations tests to the test case.
 
     Includes: :class:`CreateAPITestCaseMixin`, :class:`UpdateAPITestCaseMixin`, :class:`DestroyAPITestCaseMixin`.
@@ -455,6 +463,7 @@ class WriteRESTAPITestCaseMixin(CreateAPITestCaseMixin, UpdateAPITestCaseMixin, 
 
 
 class ReadWriteRESTAPITestCaseMixin(ReadRESTAPITestCaseMixin, WriteRESTAPITestCaseMixin):
+
     """A complete API test case that covers all successful CRUD operation requests.
 
     Includes: :class:`ReadRESTAPITestCaseMixin`, :class:`WriteRESTAPITestCaseMixin`.
