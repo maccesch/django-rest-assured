@@ -8,7 +8,6 @@ from django.utils.six import text_type
 
 
 class BaseRESTAPITestCase(APITestCase):
-
     """Base test case class for testing REST API endpoints."""
 
     #: *required*: Base route name of the API endpoints to test.
@@ -23,6 +22,8 @@ class BaseRESTAPITestCase(APITestCase):
     lookup_field = 'pk'
     #: User factory to use in case you need user authentication for testing. Defaults to ``None``.
     user_factory = None
+    #: Additional positional arguments to use for reversing the url based on base_name
+    reverse_args = []
     #: The main test subject.
     object = None
     #: The user instance created if the ``user_factory`` is set and used. Defaults to ``None``.
@@ -69,7 +70,6 @@ class BaseRESTAPITestCase(APITestCase):
 
 
 class ListAPITestCaseMixin(object):
-
     """Adds a list view test to the test case."""
 
     def get_list_url(self):
@@ -78,7 +78,7 @@ class ListAPITestCaseMixin(object):
         :returns: The url of list endpoint.
         """
 
-        return reverse(self.base_name + self.LIST_SUFFIX)
+        return reverse(self.base_name + self.LIST_SUFFIX, args=self.reverse_args)
 
     def get_list_response(self, **kwargs):
         """Send the list request and return the response.
@@ -120,7 +120,6 @@ class ListAPITestCaseMixin(object):
 
 
 class DetailAPITestCaseMixin(object):
-
     """Adds a detail view test to the test case."""
 
     # A list of attribute names to check equality between the main object and the response data.
@@ -135,7 +134,8 @@ class DetailAPITestCaseMixin(object):
         """
 
         object_id = getattr(self.object, self.lookup_field)
-        return reverse(self.base_name + self.DETAIL_SUFFIX, args=[text_type(object_id)])
+        return reverse(self.base_name + self.DETAIL_SUFFIX,
+                       args=self.reverse_args + [text_type(object_id)])
 
     def get_detail_response(self, **kwargs):
         """Send the detail request and return the response.
@@ -198,7 +198,6 @@ class DetailAPITestCaseMixin(object):
 
 
 class CreateAPITestCaseMixin(object):
-
     """Adds a create view test to the test case."""
 
     #: *required*: Dictionary of data to use as the POST request's body.
@@ -220,7 +219,7 @@ class CreateAPITestCaseMixin(object):
         :returns: The url of create endpoint.
         """
 
-        return reverse(self._get_create_name())
+        return reverse(self._get_create_name(), args=self.reverse_args)
 
     def get_create_response(self, data=None, **kwargs):
         """Send the create request and return the response.
@@ -265,7 +264,6 @@ class CreateAPITestCaseMixin(object):
 
 
 class DestroyAPITestCaseMixin(object):
-
     """Adds a destroy view test to the test case."""
 
     def get_destroy_url(self):
@@ -276,7 +274,7 @@ class DestroyAPITestCaseMixin(object):
 
         self.object_id = getattr(self.object, self.lookup_field)
         return reverse(self._get_destroy_name(),
-                       args=(self.object_id,))
+                       args=self.reverse_args + [self.object_id])
 
     def get_destroy_response(self, **kwargs):
         """Send the destroy request and return the response.
@@ -315,7 +313,6 @@ class DestroyAPITestCaseMixin(object):
 
 
 class UpdateAPITestCaseMixin(object):
-
     """Adds an update view test to the test case."""
 
     #: Whether to send a PATCH request instead of PUT. Defaults to ``True``.
@@ -334,7 +331,7 @@ class UpdateAPITestCaseMixin(object):
 
         self.object_id = getattr(self.object, self.lookup_field)
         return reverse(self._get_update_name(),
-                       args=(self.object_id,))
+                       args=self.reverse_args + [self.object_id])
 
     def get_update_response(self, data=None, results=None, use_patch=None, **kwargs):
         """Send the update request and return the response.
@@ -440,7 +437,6 @@ class UpdateAPITestCaseMixin(object):
 
 
 class ReadRESTAPITestCaseMixin(ListAPITestCaseMixin, DetailAPITestCaseMixin):
-
     """Adds the read CRUD operations tests to the test case.
 
     Includes: :class:`ListAPITestCaseMixin`, :class:`DetailAPITestCaseMixin`.
@@ -450,7 +446,6 @@ class ReadRESTAPITestCaseMixin(ListAPITestCaseMixin, DetailAPITestCaseMixin):
 
 
 class WriteRESTAPITestCaseMixin(CreateAPITestCaseMixin, UpdateAPITestCaseMixin, DestroyAPITestCaseMixin):
-
     """Adds the write CRUD operations tests to the test case.
 
     Includes: :class:`CreateAPITestCaseMixin`, :class:`UpdateAPITestCaseMixin`, :class:`DestroyAPITestCaseMixin`.
@@ -460,7 +455,6 @@ class WriteRESTAPITestCaseMixin(CreateAPITestCaseMixin, UpdateAPITestCaseMixin, 
 
 
 class ReadWriteRESTAPITestCaseMixin(ReadRESTAPITestCaseMixin, WriteRESTAPITestCaseMixin):
-
     """A complete API test case that covers all successful CRUD operation requests.
 
     Includes: :class:`ReadRESTAPITestCaseMixin`, :class:`WriteRESTAPITestCaseMixin`.
