@@ -443,7 +443,7 @@ class UpdateAPITestCaseMixin(object):
 
 
 class ReadRESTAPITestCaseMixin(ListAPITestCaseMixin, DetailAPITestCaseMixin):
-    
+
     """Adds the read CRUD operations tests to the test case.
 
     Includes: :class:`ListAPITestCaseMixin`, :class:`DetailAPITestCaseMixin`.
